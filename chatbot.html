@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TriChargeHub|SKM</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            
+        }
+
+        .logo a {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff00;
+            text-decoration: none;
+        }
+
+        .nav-center {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .nav-center a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-center a:hover,
+        .nav-center a.active {
+            color: #00ff00;
+        }
+
+        .contact-btn {
+            background: #00ff00;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .contact-btn:hover {
+            background: #00cc00;
+            transform: scale(1.05);
+        }
+
+          /* Chatbot Container */
+        .chat-container {
+            width: 400px;
+            margin: 100px auto;
+            background-color: #111;
+            border: 1px solid #00ff00;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .chat-header {
+            background-color: #00ff00;
+            color: #000;
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-box .message {
+            margin: 10px 0;
+            display: flex;
+        }
+
+        .chat-box .message.bot {
+            justify-content: flex-start;
+        }
+
+        .chat-box .message.user {
+            justify-content: flex-end;
+        }
+
+        .chat-box .message span {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .chat-box .message.bot span {
+            background-color: #555;
+            color: #fff;
+        }
+
+        .chat-box .message.user span {
+            background-color: #00ff00;
+            color: #000;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: #111;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 5px;
+        }
+
+        .chat-input button {
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #00cc00;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            background: #111;
+            color: #ccc;
+            padding: 15px 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+     <link rel="stylesheet" href="style.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <!-- Logo on the left -->
+            <div class="logo">
+                <a href="index.html">TriChargeHub</a>
+            </div>
+            <!-- Navigation Links in Center -->
+            <nav class="nav-center">
+                <a href="index.html" class="active">Home</a>
+                <a href="charging-locator.html">Charging Locator</a>
+            </nav>
+            <!-- Contact Button -->
+            <button class="contact-btn" onclick="window.location.href='chatbot.html'">Chat with Us</button>
+        </div>
+    </header>
+    
+
+    <!-- Chatbot Section -->
+    <div class="chat-container">
+        <div class="chat-header">Chat with Us</div>
+        <div class="chat-box" id="chat-box">
+            <!-- Default Greeting Message -->
+            <div class="message bot">
+                <span>Hey there! How can I help you?</span>
+            </div>
+        </div>
+            
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>&copy; TriChargeHub. All Rights Reserved.</footer>
+
+    <!-- JavaScript -->
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("chat-input");
+        const responses = {
+    "hello": "Hi there! How can I assist you today?",
+    "how are you": "I'm just a bot, but I'm ready to help you. How can I assist you?",
+    "bye": "Goodbye! Have a great day, and drive safely!",
+    
+    // Booking and Cancellation
+    "how can i book a charging station": "To book a station, visit the 'Charging Locator' page, select your desired station, and confirm your booking with your preferred date and time.",
+    "how can i cancel my booking": "You can cancel your booking through the 'My Bookings' section or by contacting our support team via the 'Contact Us' page.",
+    "can i modify my booking": "Yes, you can modify your booking details under the 'My Bookings' section. Ensure changes are made at least 15 minutes before your slot starts.",
+    "what if i arrive late for my slot": "If you arrive late, the station might be assigned to the next user. To avoid this, please reach on time or reschedule your slot in advance.",
+    "ok":"Great! Let me know if there's anything else you'd like to know or do.",
+    "thank you" : "You're welcome!If you have any more questions or need assistance in the future, feel free to reach out. Have a great day!",
+    "no thankyou" : "You're welcome!If you have any more questions or need assistance in the future, feel free to reach out. Have a great day!",
+    // Payments
+    "how can i pay the bills": "You can pay using the following methods:\n1. Credit/Debit Cards\n2. UPI (Google Pay, PhonePe, Paytm)\n3. Net Banking\n4. Mobile Wallets (Paytm, Amazon Pay).",
+    "do you accept cash": "No, we currently accept only online payments through cards, UPI, or mobile wallets for a seamless experience.",
+    "is online payment safe": "Yes, all payments are secured using the latest encryption methods to ensure your transactions are safe and hassle-free.",
+
+    // Charging Costs and Times
+    "how much does 2 wheeler charging cost": "Level 1 (Slow Charging) costs ₹20 per hour.",
+    "how much does 3 wheeler charging cost": "Level 2 (Fast Charging) costs ₹30 per hour.",
+    "how much does  4 wheeler charging cost": "Level 3 (DC Fast Charging) costs ₹50 per hour.",
+    "how long does it take to charge my ev": "It depends on the charger:\n- Level 1: 6-8 hours\n- Level 2: 2-4 hours\n- Level 3 (DC Fast Charging): 30-45 minutes.",
+    
+    // Station Details and Availability
+    "how can i find a nearby station": "You can find nearby stations by using our 'Charging Locator' feature and searching your city or location.",
+    "how do i check station availability": "Visit the 'Charging Locator' page, and you will see real-time station availability near you.",
+    "what if the station is full": "If the station is full, you can book an available slot in advance for the next time slot or check nearby stations for availability.",
+    "how many charging points are there": "We have over 36,000+ charging points across 1,600+ cities. Search your location in the 'Charging Locator' to find one near you.",
+    
+    // Technical Questions
+    "what types of vehicles do you support": "We support 2-wheelers, 3-wheelers, and 4-wheelers. Our stations provide Level 1, Level 2, and DC Fast Charging facilities.",
+    "what types of connectors are available": "Our stations support:\n- 6/16A Socket\n- Type-2\n- CCS-2\n- CHAdeMO.",
+    "is there a penalty for overstaying": "Yes, a penalty of ₹50 for every 15 minutes will apply if you exceed your booked charging time.",
+    "how do i know when charging is done": "You will receive a notification on your registered phone number/email when your charging session is complete.",
+    "do you support all types of ev brands": "Yes, we support all major EV brands, including Tata, MG, Hyundai, Tesla, and more.",
+    
+    // Miscellaneous
+    "can i book a station in advance": "Yes, you can book a charging station in advance to avoid waiting. Use the 'Charging Locator' feature to book.",
+    "can i charge my ev overnight": "Yes, you can charge overnight using our Level 1 chargers. Make sure to book your slot in advance.",
+    "do i get a receipt for payment": "Yes, you will receive a digital receipt on your registered email after successful payment.",
+    "do you provide support for charging issues": "Yes, our support team is available 24/7. Visit 'Contact Us' for assistance.",
+    "how can i contact support": "You can contact us through the 'Contact Us' page or email us at support@bolt.earth.",
+    
+    
+    // Default response
+    "default": "I'm sorry, I didn't understand that. Could you try rephrasing your question? I'm here to help!"
+};
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Display user message
+            displayMessage(message, "user");
+
+            // Get bot response
+            const botResponse = getBotResponse(message);
+
+            // Display bot response
+            setTimeout(() => {
+                displayMessage(botResponse, "bot");
+            }, 500);
+
+            // Clear input field
+            userInput.value = "";
+        }
+
+        function displayMessage(message, sender) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", sender);
+
+            const messageSpan = document.createElement("span");
+            messageSpan.textContent = message;
+
+            messageDiv.appendChild(messageSpan);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            const lowerCaseMessage = message.toLowerCase();
+            return responses[lowerCaseMessage] || responses["default"];
+        }
+    </script>
+</body>
+</html>

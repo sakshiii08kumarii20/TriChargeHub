@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charging Locator | BOLT.EARTH</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <!-- Custom CSS -->
+    <style>
+        /* General Styles */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #111;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00ff00 !important;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #00ff00 !important;
+        }
+
+        .contact-btn {
+            background-color: #00ff00;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            transition: background 0.3s;
+        }
+
+        .contact-btn:hover {
+            background: #00cc00;
+            transform: scale(1.05);
+        }
+
+        /* Main Section */
+        .locator {
+            padding: 30px 0;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #333;
+        }
+
+        .card-title {
+            color: #00ff00;
+        }
+
+        #mapid {
+            height: 500px;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+
+        .station-item {
+            background: #222;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            color: #ccc;
+            padding: 15px 0;
+            text-align: center;
+        }
+    </style>
+     <link rel="stylesheet" href="style.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">TriChargeHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="charging-locator.html">Charging Locator</a>
+                    </li>
+                </ul>
+            </div>
+           
+            <button class="contact-btn" onclick="window.location.href='chatbot.html'">Chat with Us</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container locator mt-5 pt-5">
+        <div class="row gx-4 gy-4">
+            <!-- Sidebar for Search and Station List -->
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm">
+                    <h5 class="card-title text-center">Search Charging Stations</h5>
+                    <div class="input-group mb-3">
+                        <input type="text" id="search-box" class="form-control" placeholder="Enter city name">
+                        <button id="search-btn" class="btn btn-success">Search</button>
+                    </div>
+                    <h6 class="mb-2">Available Stations:</h6>
+                    <ul id="stations-list" class="list-group">
+                        <!-- Station list populates dynamically -->
+                    </ul>
+                </div>
+            </div>
+
+             <!-- Map Section -->
+             <div class="col-md-8">
+                <div id="mapid" class="rounded shadow-sm"></div>
+            </div>
+        </div>
+    </main>
+
+     <!-- Footer -->
+     <footer>
+        <p>&copy; TriChargeHub. All Rights Reserved.</p>
+    </footer>
+
+   <!-- Leaflet.js for Map -->
+   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+   <!-- Bootstrap Bundle JS -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Leaflet Map
+        const map = L.map('mapid').setView([20.5937, 78.9629], 5); // Default: India center
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // City and Station Data
+        const cityData = {
+           "Mumbai": [
+        { name: "Phoenix Marketcity", location: [19.086, 72.889] },
+        { name: "Powai Plaza", location: [19.118, 72.907] },
+        { name: "Andheri West", location: [19.118, 72.832] },
+        { name: "Bandra Kurla Complex", location: [19.072, 72.868] },
+        { name: "Juhu Beach", location: [19.088, 72.826] },
+        { name: "Marine Drive", location: [18.943, 72.823] },
+        { name: "Worli Sea Face", location: [19.015, 72.817] },
+        { name: "CST Terminal", location: [18.940, 72.835] },
+        { name: "Malad Infinity Mall", location: [19.174, 72.842] },
+        { name: "Kurla West", location: [19.065, 72.882] }
+    ],
+    "Delhi": [
+        { name: "Connaught Place", location: [28.630, 77.217] },
+        { name: "India Gate", location: [28.612, 77.229] },
+        { name: "Karol Bagh", location: [28.650, 77.191] },
+        { name: "Lajpat Nagar", location: [28.567, 77.234] },
+        { name: "Khan Market", location: [28.600, 77.226] },
+        { name: "Chandni Chowk", location: [28.655, 77.231] },
+        { name: "Dwarka Sector 10", location: [28.597, 77.043] },
+        { name: "Rajouri Garden", location: [28.642, 77.119] },
+        { name: "Pitampura", location: [28.699, 77.132] },
+        { name: "Sarojini Nagar", location: [28.572, 77.204] }
+    ],
+    "Bangalore": [
+        { name: "MG Road", location: [12.974, 77.605] },
+        { name: "Electronic City", location: [12.844, 77.662] },
+        { name: "Koramangala", location: [12.935, 77.612] },
+        { name: "Whitefield", location: [12.969, 77.749] },
+        { name: "Hebbal", location: [13.035, 77.596] },
+        { name: "Indiranagar", location: [12.978, 77.640] },
+        { name: "Marathahalli", location: [12.956, 77.701] },
+        { name: "Jayanagar", location: [12.920, 77.594] },
+        { name: "Banashankari", location: [12.918, 77.573] },
+        { name: "Malleshwaram", location: [13.002, 77.569] }
+    ],
+    "Hyderabad": [
+        { name: "Hitech City", location: [17.450, 78.388] },
+        { name: "Gachibowli", location: [17.440, 78.348] },
+        { name: "Jubilee Hills", location: [17.431, 78.411] },
+        { name: "Banjara Hills", location: [17.421, 78.438] },
+        { name: "Charminar", location: [17.361, 78.474] },
+        { name: "Begumpet", location: [17.438, 78.469] },
+        { name: "Secunderabad", location: [17.441, 78.498] },
+        { name: "Madhapur", location: [17.448, 78.391] },
+        { name: "Kukatpally", location: [17.494, 78.399] },
+        { name: "Shamshabad", location: [17.255, 78.429] }
+    ],
+    "Chennai": [
+        { name: "T Nagar", location: [13.042, 80.233] },
+        { name: "Velachery", location: [12.976, 80.221] },
+        { name: "Guindy", location: [13.010, 80.220] },
+        { name: "Adyar", location: [13.006, 80.257] },
+        { name: "Anna Nagar", location: [13.086, 80.211] },
+        { name: "Tambaram", location: [12.922, 80.127] },
+        { name: "Besant Nagar", location: [13.001, 80.273] },
+        { name: "OMR", location: [12.845, 80.220] },
+        { name: "Nungambakkam", location: [13.063, 80.242] },
+        { name: "Thiruvanmiyur", location: [12.983, 80.259] }
+    ],
+    "Pune": [
+        { name: "Viman Nagar", location: [18.566, 73.914] },
+        { name: "Koregaon Park", location: [18.536, 73.899] },
+        { name: "Baner", location: [18.564, 73.786] },
+        { name: "Hinjewadi", location: [18.597, 73.718] },
+        { name: "Hadapsar", location: [18.508, 73.927] },
+        { name: "Kalyani Nagar", location: [18.556, 73.903] },
+        { name: "Deccan Gymkhana", location: [18.517, 73.841] },
+        { name: "Magarpatta", location: [18.512, 73.929] },
+        { name: "Swargate", location: [18.500, 73.858] },
+        { name: "Aundh", location: [18.559, 73.808] }
+    ],
+    "Kolkata": [
+        { name: "Park Street", location: [22.555, 88.352] },
+        { name: "Salt Lake Sector V", location: [22.574, 88.433] },
+        { name: "New Town", location: [22.578, 88.465] },
+        { name: "Howrah Bridge", location: [22.586, 88.346] },
+        { name: "Esplanade", location: [22.564, 88.351] },
+        { name: "Gariahat", location: [22.518, 88.365] },
+        { name: "Behala", location: [22.501, 88.317] },
+        { name: "Alipore", location: [22.536, 88.326] },
+        { name: "Ballygunge", location: [22.520, 88.366] },
+        { name: "Kalighat", location: [22.523, 88.347] }
+    ],
+    "Ahmedabad": [
+        { name: "CG Road", location: [23.032, 72.562] },
+        { name: "Navrangpura", location: [23.039, 72.559] },
+        { name: "Maninagar", location: [22.978, 72.606] },
+        { name: "Bodakdev", location: [23.052, 72.517] },
+        { name: "Ashram Road", location: [23.029, 72.566] },
+        { name: "Prahlad Nagar", location: [23.014, 72.530] },
+        { name: "SG Highway", location: [23.080, 72.491] },
+        { name: "Kankaria", location: [22.988, 72.601] },
+        { name: "Sabarmati", location: [23.080, 72.580] },
+        { name: "Shyamal Cross Road", location: [23.012, 72.540] }
+    ],
+    "Lucknow": [
+        { name: "Hazratganj", location: [26.850, 80.945] },
+        { name: "Aliganj", location: [26.882, 80.937] },
+        { name: "Indira Nagar", location: [26.877, 81.003] },
+        { name: "Gomti Nagar", location: [26.859, 81.010] },
+        { name: "Aminabad", location: [26.854, 80.926] },
+        { name: "Charbagh", location: [26.825, 80.922] },
+        { name: "Chowk", location: [26.868, 80.916] },
+        { name: "Ashiyana", location: [26.798, 80.899] },
+        { name: "Rajajipuram", location: [26.853, 80.890] },
+        { name: "Mahanagar", location: [26.868, 80.953] }
+    ],
+    "Jaipur": [
+        { name: "C-Scheme", location: [26.922, 75.802] },
+        { name: "Malviya Nagar", location: [26.853, 75.818] },
+        { name: "Vaishali Nagar", location: [26.914, 75.739] },
+        { name: "Raja Park", location: [26.901, 75.827] },
+        { name: "Mansarovar", location: [26.856, 75.763] },
+        { name: "Ajmer Road", location: [26.904, 75.748] },
+        { name: "Bapu Nagar", location: [26.891, 75.814] },
+        { name: "Jagatpura", location: [26.818, 75.854] },
+        { name: "Amer Road", location: [26.983, 75.850] },
+        { name: "Pink City Area", location: [26.926, 75.824] }
+    ],
+    "Surat": [
+        { name: "Athwa Gate", location: [21.185, 72.831] },
+        { name: "Adajan", location: [21.203, 72.794] },
+        { name: "City Light", location: [21.180, 72.820] },
+        { name: "Dumas Road", location: [21.133, 72.762] },
+        { name: "Vesu", location: [21.146, 72.778] },
+        { name: "Rander", location: [21.221, 72.798] },
+        { name: "Udhna", location: [21.162, 72.839] },
+        { name: "Katargam", location: [21.222, 72.855] },
+        { name: "Varachha", location: [21.216, 72.868] },
+        { name: "Piplod", location: [21.150, 72.777] }
+    ],
+    "Nagpur": [
+        { name: "Sadar", location: [21.151, 79.092] },
+        { name: "Civil Lines", location: [21.141, 79.083] },
+        { name: "Dharampeth", location: [21.145, 79.073] },
+        { name: "Sitabuldi", location: [21.144, 79.088] },
+        { name: "Manish Nagar", location: [21.091, 79.106] },
+        { name: "Wardha Road", location: [21.099, 79.070] },
+        { name: "Koradi Road", location: [21.207, 79.083] },
+        { name: "Mahal", location: [21.143, 79.100] },
+        { name: "Ramdaspeth", location: [21.145, 79.084] },
+        { name: "Kamptee Road", location: [21.176, 79.116] }
+    ],
+    "Indore": [
+        { name: "Rajwada", location: [22.717, 75.856] },
+        { name: "Vijay Nagar", location: [22.753, 75.893] },
+        { name: "MG Road", location: [22.718, 75.857] },
+        { name: "Palasia", location: [22.719, 75.878] },
+        { name: "Bhawarkua", location: [22.699, 75.853] },
+        { name: "Sapna Sangeeta", location: [22.713, 75.838] },
+        { name: "Khandwa Road", location: [22.677, 75.859] },
+        { name: "Rau", location: [22.651, 75.810] },
+        { name: "Scheme 54", location: [22.753, 75.892] },
+        { name: "Gandhi Nagar", location: [22.745, 75.818] }
+    ],
+    "Bhopal": [
+        { name: "New Market", location: [23.231, 77.415] },
+        { name: "MP Nagar", location: [23.218, 77.432] },
+        { name: "Arera Colony", location: [23.213, 77.438] },
+        { name: "Kolar Road", location: [23.181, 77.429] },
+        { name: "Berasia Road", location: [23.281, 77.404] },
+        { name: "Shahpura", location: [23.185, 77.437] },
+        { name: "Govindpura", location: [23.256, 77.447] },
+        { name: "TT Nagar", location: [23.230, 77.415] },
+        { name: "Chunabhatti", location: [23.197, 77.442] },
+        { name: "Lalghati", location: [23.276, 77.408] }
+    ],
+    "Chandigarh": [
+        { name: "Sector 17", location: [30.735, 76.779] },
+        { name: "Sector 22", location: [30.727, 76.774] },
+        { name: "Sector 35", location: [30.717, 76.761] },
+        { name: "Sector 43", location: [30.717, 76.732] },
+        { name: "Manimajra", location: [30.710, 76.828] },
+        { name: "Industrial Area", location: [30.698, 76.801] },
+        { name: "Sector 9", location: [30.754, 76.784] },
+        { name: "Sector 26", location: [30.728, 76.794] },
+        { name: "Sector 10", location: [30.757, 76.768] },
+        { name: "Sector 44", location: [30.710, 76.735] }
+    ],
+    "Coimbatore": [
+        { name: "Gandhipuram", location: [11.018, 76.971] },
+        { name: "RS Puram", location: [11.013, 76.950] },
+        { name: "Peelamedu", location: [11.026, 77.001] },
+        { name: "Saibaba Colony", location: [11.034, 76.951] },
+        { name: "Race Course", location: [10.998, 76.966] },
+        { name: "Singanallur", location: [11.001, 77.024] },
+        { name: "Ukkadam", location: [10.987, 76.949] },
+        { name: "Saravanampatti", location: [11.091, 76.997] },
+        { name: "Avinashi Road", location: [11.005, 77.034] },
+        { name: "Thudiyalur", location: [11.081, 76.949] }
+    ]
+        };
+
+        const stationList = document.getElementById('stations-list');
+
+        // Function to update stations based on city
+        function updateStations(city) {
+            const stations = cityData[city];
+            stationList.innerHTML = ""; // Clear existing list
+
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            if (stations) {
+                stations.forEach(station => {
+                    const marker = L.marker(station.location).addTo(map).bindPopup(`<b>${station.name}</b>`);
+
+                    const listItem = document.createElement('li');
+                    listItem.className = 'station-item list-group-item';
+
+                    listItem.innerHTML = `
+                        <span>${station.name}</span>
+                        <button class="contact1-btn" onclick="map.setView([${station.location}], 14);">View</button>
+                        <button class="contact2-btn" onclick="navigateToBooking('${station.name}')">Book</button>
+                    `;
+
+                    stationList.appendChild(listItem);
+                });
+
+                map.setView(stations[0].location, 12);
+            } else {
+                stationList.innerHTML = `<li class="list-group-item text-danger">No stations found for ${city}</li>`;
+            }
+        }
+
+        // Navigate to station details page
+        function navigateToBooking(stationName) {
+            window.location.href = `station-details.html?station=${encodeURIComponent(stationName)}`;
+        }
+
+        // Event listener for the search button
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const city = document.getElementById('search-box').value.trim();
+            if (cityData[city]) {
+                updateStations(city);
+            } else {
+                stationList.innerHTML = `<li class="list-group-item text-danger">City not found. Try another city.</li>`;
+            }
+        });
+    </script>
+</body>
+</html>

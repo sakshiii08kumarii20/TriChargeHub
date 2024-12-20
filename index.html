@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TriChargeHub|SKM</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        /* General Styles */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #111;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar-brand {
+            color: #00ff00 !important;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #00ff00 !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 120px 20px 80px;
+            background: linear-gradient(135deg, #111, #000);
+            color: #fff;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: #00ff00;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .hero img {
+            max-width: 40%; /* Limit size to 50% of container */
+            height: auto;
+            margin-top: 20px;
+        }
+        
+
+        /* Level Section Cards */
+        .level-card {
+            background-color: #111;
+            color: #fff;
+            border: 1px solid #222;
+            border-radius: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 255, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .level-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 8px 16px rgba(0, 255, 0, 0.5);
+        }
+
+        .level-card img {
+            max-width: 60%; /* Reduce image size */
+            height: auto;
+            margin: 10px auto; /* Center align and provide spacing */
+            display: block;
+        }
+
+
+        .level-card .content {
+            padding: 20px;
+        }
+
+        .level-card h2 {
+            color: #00ff00;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .level-card p {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            background: #111;
+            color: #ccc;
+            padding: 15px 0;
+            margin-top: 30px;
+        }
+        .contact-btn {
+            background: #00ff00;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .contact-btn:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">TriChargeHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="charging-locator.html">Charging Locator</a>
+                    </li>
+                </ul>
+            </div>
+            <button class="contact-btn" onclick="window.location.href='chatbot.html'">Chat with Us</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero mt-5">
+        <div class="container">
+            <h1>INDIA'S LARGEST <br><span>EV CHARGING NETWORK</span></h1>
+            <p>36,000+ Charging Points <br> 1,600+ Cities</p>
+            <img src="images/img4.webp" alt="EV Charging Network Map" class="img-fluid">
+        </div>
+    </section>
+
+    <!-- Levels Section -->
+    <section class="container py-5">
+        <div class="row g-4">
+            <!-- Level 1 -->
+            <div class="col-md-4">
+                <div class="level-card">
+                    <img src="images/img3.webp" alt="Level 1 Charger">
+                    <div class="content">
+                        <h2>Level 1 (Slow Charging)</h2>
+                        <p>Intuitive, user-friendly, and universally compatible with all EVs.</p>
+                        <p><strong>Output Rating:</strong> 3.3 kW</p>
+                        <p><strong>Connector Type:</strong> 6/16A Socket</p>
+                        <p><strong>Compatibility:</strong> 2 Wheeler, 3 Wheeler, 4 Wheeler</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 2 -->
+            <div class="col-md-4">
+                <div class="level-card">
+                    <img src="images/img2.webp" alt="Level 2 Charger">
+                    <div class="content">
+                        <h2> Level 2 (Fast Charging)</h2>
+                        <p>Ideal for both home and commercial use with efficient charging.</p>
+                        <p><strong>Output Rating:</strong> 7 kW, 11 kW, 22 kW</p>
+                        <p><strong>Connector Type:</strong> Type-2</p>
+                        <p><strong>Compatibility:</strong> 4 Wheeler</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 3 -->
+            <div class="col-md-4">
+                <div class="level-card">
+                    <img src="images/img1.webp" alt="Level 3 Charger">
+                    <div class="content">
+                        <h2>DC Fast Charging (Level 3)</h2>
+                        <p>High-speed charging with a robust output for commercial use.</p>
+                        <p><strong>Output Rating:</strong> 30 kW - 240 kW</p>
+                        <p><strong>Connector Type:</strong> CCS-2, CHAdeMO</p>
+                        <p><strong>Compatibility:</strong> 4 Wheeler</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; TriChargeHub. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

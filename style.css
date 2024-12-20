@@ -1,0 +1,205 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+}
+
+/* Header */
+.navbar {
+    position: fixed; /* Sticks the navbar to the top */
+    top: 0; /* Aligns it to the top of the viewport */
+    left: 0; /* Aligns it to the left */
+    width: 100%; /* Makes it span the full width */
+    z-index: 1000; /* Ensures it stays on top of other elements */
+    background: #111; /* Retains the navbar background */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Optional shadow */
+}
+.logo a {
+    color: #00ff00;
+    font-size: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    
+}
+
+nav a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+.contact-btn {
+    background: #00ff00;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+    background: #111;
+}
+
+.hero h1 {
+    font-size: 3rem;
+}
+
+.hero h1 span {
+    color: #00ff00;
+}
+
+.hero img {
+    max-width: 50%;
+    height: auto;
+    margin-top: 20px;
+}
+
+/* Levels Section */
+.levels-container {
+    position: relative;
+    width: 100%;
+}
+
+.level {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 50px 20px;
+    background: #111;
+    height: 100vh; /* Full viewport height */
+    color: #fff;
+}
+
+.level:nth-child(odd) {
+    background: #000;
+}
+
+.level .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 900px;
+}
+
+.level img {
+    max-width: 300px;
+    height: auto;
+}
+
+.level h2 span {
+    color: #00ff00;
+}
+
+.level p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background: #111;
+    color: #ccc;
+    padding: 15px 10px;
+}
+
+/* Scrollable Station List */
+#stations-list {
+    max-height: 250px; /* Set a fixed height */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #222;
+}
+
+.station-item {
+    background: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-bottom: 1px solid #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.station-item:last-child {
+    border-bottom: none; /* Remove bottom border for the last item */
+}
+
+.station-item button {
+    margin-left: 5px;
+}
+.contact1-btn {
+    background: rgb(106, 168, 14);
+    color: #000;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+.contact2-btn {
+    background: #00ff00;
+    color: #000;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+
+
+
+
+
+
+
+/* Modal Form Styling */
+.modal-content {
+    background-color: #111;
+    color: #fff;
+    border: 1px solid #333;
+}
+
+.modal-content label {
+    color: #00ff00;
+}
+
+.form-control {
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #333;
+}
+
+.form-control:focus {
+    border-color: #00ff00;
+    box-shadow: none;
+}
+
+.btn-success {
+    background-color: #00ff00;
+    color: #000;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #00cc00;
+}

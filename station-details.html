@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station Details | BOLT.EARTH</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- Custom CSS -->
+    <style>
+        /* General Reset */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: #111;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover,
+        .navbar a.active {
+            color: #00ff00;
+        }
+
+        .contact-btn {
+            background: #00ff00;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .contact-btn:hover {
+            background: #00cc00;
+        }
+
+        /* Content Container */
+        .content {
+            margin-top: 100px; /* Offset for the fixed navbar */
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Station Details Section */
+        .details-card {
+            background: #111;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0px 4px 8px rgba(0, 255, 0, 0.3);
+        }
+
+        .details-card h3 {
+            color: #00ff00;
+        }
+
+        /* Chart Container */
+        #chart-container {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 255, 0, 0.3);
+            margin-bottom: 40px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            background: #111;
+            color: #ccc;
+            padding: 15px 0;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <a href="index.html" style="font-size: 24px; font-weight: bold; color: #00ff00;">TriChargeHub</a>
+            </div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="charging-locator.html" class="active">Charging Locator</a>
+            </nav>
+            <button class="contact-btn" onclick="window.location.href='chatbot.html'">Chat with Us</button>
+        </div>
+    </header>
+
+    <!-- Station Details -->
+    <div class="container content mt-5">
+        <div class="details-card mb-5">
+            <h3 id="station-name">Station Name</h3>
+            <p id="vehicles-info">Vehicles in Queue: 0</p>
+            <p id="stations-info">Stations Available: 0 / 0</p>
+            <button class="btn btn-success" onclick="openBookingForm()">Confirm Your Booking</button>
+        </div>
+        <!-- Chart Section -->
+        <div class="row justify-content-center mt-4">
+            <div id="chart-container" class="col-md-8 text-center">
+                <h4 class="mb-3" style="color: #00ff00;">Station Status</h4>
+                <canvas id="stationChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Form Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Your Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm">
+                        <div class="mb-3">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="chargingType">Charging Type</label>
+                            <select id="chargingType" class="form-control" required>
+                                <option value="Fast">Fast</option>
+                                <option value="Normal">Slow</option>
+                                <option value="Normal">DC</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vehiclesType">Vehicle Tpye</label>
+                            <select id="vehiclesType" class="form-control" required>
+                                <option value="two">Two Wheeler</option>
+                                <option value="three">Three Wheeler</option>
+                                <option value="Four">Four Wheeler</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time">Time</label>
+                            <input type="time" id="time" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>&copy; TriChargeHub. All Rights Reserved.</footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- EmailJS -->
+    <script>
+        emailjs.init("EYqS7IAdegm8KVXkc"); // Replace with your EmailJS Public Key
+
+        // Retrieve station name dynamically from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const stationName = getQueryParam("station") || "Unknown Station";
+        const vehiclesInQueue = Math.floor(Math.random() * 10) + 1;
+        const stationsAvailable = Math.floor(Math.random() * 5) + 1;
+        const totalStations = 10;
+
+        document.getElementById('station-name').innerText = stationName;
+        document.getElementById('vehicles-info').innerText = `Vehicles in Queue: ${vehiclesInQueue}`;
+        document.getElementById('stations-info').innerText = `Stations Available: ${stationsAvailable} / ${totalStations}`;
+
+        new Chart(document.getElementById('stationChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Vehicles in Queue', 'Stations Available', 'Total Stations'],
+                datasets: [{
+                    label: 'Station Status',
+                    data: [vehiclesInQueue, stationsAvailable, totalStations],
+                    backgroundColor: ['#ff4c4c', '#00ff00', '#007bff'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+            responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#fff' },
+                        grid: { color: '#444' }
+                    },
+                    y: {
+                        ticks: { color: '#fff' },
+                        grid: { color: '#444' }
+                    }
+                }
+            }
+        });
+
+        function openBookingForm() {
+            const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            modal.show();
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const chargingType = document.getElementById('chargingType').value;
+            const vehiclesType = document.getElementById('vehiclesType').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+
+            emailjs.send("service_2fhh6ja", "template_vfdfd3g", {
+                name: name,
+                email: email,
+                chargingType: chargingType,
+                vehiclesType: vehiclesType,
+                date: date,
+                time: time,
+                station: stationName
+            }).then(() => {
+                alert(`Booking confirmed! A confirmation email has been sent to ${email}.`);
+            }).catch(err => {
+                console.error(err);
+                alert("Failed to send confirmation email. Please try again later.");
+            });
+        });
+    </script>
+</body>
+</html>
